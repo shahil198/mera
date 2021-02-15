@@ -1,0 +1,65 @@
+<snippet>
+	<content><![CDATA[
+#include<bits/stdc++.h>
+using namespace std;a
+#define ll long long 
+ 
+vector<int>st(400005,INT_MAX);
+vector<int>arr(100005);
+ 
+ 
+int query(int ind,int start,int end,int qstart,int qend)
+{
+	if(qstart>end or qend<start)
+		return INT_MAX;
+	if(qstart<=start and qend>=end)
+	{
+		return st[ind];
+	}
+ 
+	int mid=start + (end-start)/2;
+	int l=query(2*ind,start,mid,qstart,qend);
+	int r=query(2*ind+1,mid+1,end,qstart,qend);
+	return min(l,r);
+}
+void buildtree(int ind,int start,int end)
+{
+	if(start==end)
+	{
+		st[ind]=arr[start];
+		return;
+	}
+	int mid=start+(end-start)/2;
+	buildtree(2*ind,start,mid);
+	buildtree(2*ind+1,mid+1,end);
+ 
+	st[ind]=min(st[2*ind],st[2*ind+1]);
+}
+int main()
+{
+ 
+	int n;
+	cin>>n;
+	
+	for(int i=1;i<=n;i++)
+	{
+		cin>>arr[i];
+	}
+	buildtree(1,1,n);
+	///build part has been done
+	int q;
+	cin>>q;
+	while(q--)
+	{
+		int l,r;
+		cin>>l>>r;
+		cout<<query(1,1,n,l+1,r+1)<<endl;
+	}
+ 
+    
+    
+    return 0;
+} 
+]]></content>
+	segmenttreebasicminquery
+</snippet>

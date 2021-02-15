@@ -1,0 +1,115 @@
+<snippet>
+	<content><![CDATA[
+#include<bits/stdc++.h>
+using namespace std;
+#define mod 1000000007
+#define ll long long 
+vector<vector<ll int>> mat(51,vector<ll int>(51));
+vector<vector<ll int>> id(51,vector<ll int>(51));
+
+void mult(ll int n,vector<vector<ll int>>&a,vector<vector<ll int>>&b)
+{
+	vector<vector<ll int>> res(n,vector<ll int>(n));
+
+	for(ll int i=0;i<n;i++)
+	{
+		for( ll int j=0;j<n;j++)
+		{
+			res[i][j]=0;
+			for(ll int k=0;k<n;k++)
+			{
+				res[i][j]=(res[i][j]+(a[i][k]*b[k][j])%mod)%mod;
+			}
+		}
+	}
+	//now copy the res into id mat which is a here
+
+	for(ll int i=0;i<n;i++)
+	{
+		for(ll int j=0;j<n;j++)
+		{
+			a[i][j]=res[i][j];
+		}
+	}
+  
+}
+void power(vector<vector<ll int>>&a,ll int n,ll int  m)
+{
+	for(ll int i=0;i<n;i++)
+	{
+		for(ll int j=0;j<n;j++)
+		{
+			if(i==j)
+				id[i][j]=1;
+			else
+				id[i][j]=0;
+		}
+	} 
+    /*for(int i=1;i<=m;i++)
+    	mult(n);  ///i =i *mat;*/
+	while(m)
+	{
+		if(m%2)
+		{
+        mult(n,id,a);
+        m--;
+		}
+		else
+		{
+          mult(n,a,a);
+          m/=2;
+		}
+	}
+
+	
+
+     for(ll int i=0;i<n;i++)
+     {
+     	for(ll int j=0;j<n;j++)
+     	{
+     		mat[i][j]=id[i][j];
+     	}
+     }
+
+}
+void print(vector<vector<ll int>>&a,ll int n)
+{
+	for(ll int i=0;i<n;i++)
+	{
+		for(ll int j=0;j<n;j++)
+		{
+			cout<<a[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+}
+
+int main()
+{
+	int t;
+	cin>>t;
+	while(t--)
+	{
+	ll int n,m;
+	cin>>n>>m;
+	for(ll int i=0;i<n;i++)
+	{
+		for(ll int j=0;j<n;j++)
+		{
+			cin>>mat[i][j];
+		}
+	}
+	//input part has been done
+	power(mat,n,m);
+	print(mat,n);
+   }
+
+
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<!-- <tabTrigger>hello</tabTrigger> -->
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	matrixexponent
+	<!-- <scope>source.python</scope> -->
+</snippet>

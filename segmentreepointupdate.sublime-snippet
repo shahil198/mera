@@ -1,0 +1,118 @@
+<snippet>
+	<content><![CDATA[
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long 
+vector<int>arr(100005);
+vector<pair<int,int>>st(400005); //0dd even
+void build(int ind,int start,int end)
+{
+	if(start==end)
+	{
+		if(arr[start]%2)
+		st[ind]={1,0};
+	    else
+	    	st[ind]={0,1};
+	    return;
+	}
+	int mid=start+(end-start)/2;
+
+	build(ind*2,start,mid);
+	build(ind*2+1,mid+1,end);
+
+	st[ind].first=st[ind*2].first+st[ind*2+1].first;
+	st[ind].second=st[ind*2].second+st[ind*2+1].second;
+
+
+}
+void update(int ind,int start,int end,int i,int num)
+{
+   if(start==end)
+   {
+   	if(arr[start]%2)//tb ab even ho jaayeg
+   		st[ind]={0,1};
+   	else
+   		st[ind]={1,0};
+   	arr[start]=num;
+   	return;
+   }
+
+   int mid=start+(end-start)/2;
+   if(i<=mid) update(ind*2,start,mid,i,num);
+   else update(2*ind+1,mid+1,end,i,num);
+
+
+	st[ind].first=st[ind*2].first+st[ind*2+1].first;
+	st[ind].second=st[ind*2].second+st[ind*2+1].second;
+
+}
+int geteven(int ind,int start,int end,int qstart,int qend)
+{
+  if(start>qend or end<qstart)
+  	return 0;
+  if(start>=qstart && end<=qend)
+  {
+  	return st[ind].second;
+  }
+
+  int mid=start+(end-start)/2;
+  return geteven(ind*2,start,mid,qstart,qend)+geteven(ind*2+1,mid+1,end,qstart,qend);
+
+
+}
+int getodd(int ind,int start,int end,int qstart,int qend)
+{
+  if(start>qend or end<qstart)
+  	return 0;
+  if(start>=qstart && end<=qend)
+  {
+  	return st[ind].first;
+  }
+
+  int mid=start+(end-start)/2;
+  return getodd(ind*2,start,mid,qstart,qend)+getodd(ind*2+1,mid+1,end,qstart,qend);
+
+
+}
+
+int main()
+{
+	int n;
+	cin>>n;
+	for(int i=1;i<=n;i++)
+		cin>>arr[i];
+	//input part has been done
+	build(1,1,n);
+	int q;
+	cin>>q;
+	while(q--)
+	{
+		int type,l,r;
+		cin>>type>>l>>r;
+		if(type==0)
+		{
+			if(arr[l]%2==r%2)continue;
+			else
+			{
+				update(1,1,n,l,r);
+			}
+		}
+		else if(type==1)
+		{
+         cout<<geteven(1,1,n,l,r)<<endl;
+		}
+		else
+		{
+			cout<<getodd(1,1,n,l,r)<<endl;
+		}
+
+	}
+    
+    
+    
+    return 0;
+}
+]]></content>
+segmenttreepointupdate
+</snippet>

@@ -1,0 +1,131 @@
+<snippet>
+	<content><![CDATA[
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long 
+
+    struct node{
+    	int arr[3];
+    };
+    vector<node> st(400005);
+    void shift(int ind)
+    {
+    	int a=st[ind].arr[2];
+    	st[ind].arr[2]=st[ind].arr[1];
+    	st[ind].arr[1]=st[ind].arr[0];
+    	st[ind].arr[0]=a;
+    }
+    void build(int ind,int start,int end)
+    {
+      if(start==end)
+      {
+      	st[ind].arr[0]=1;
+      	st[ind].arr[1]=0;
+      	st[ind].arr[2]=0;
+      	return;
+      }
+      int mid=start+(end-start)/2;
+      build(2*ind,start,mid);
+      build(2*ind+1,mid+1,end);
+    
+      st[ind].arr[0]=st[ind*2].arr[0]+st[ind*2+1].arr[0];
+       st[ind].arr[1]=st[ind*2].arr[1]+st[ind*2+1].arr[1];
+        st[ind].arr[2]=st[ind*2].arr[2]+st[ind*2+1].arr[2];
+    }
+    void update(int ind,int start,int end,int qstart,int qend)
+    {
+      if(lazy[ind]!=0)
+      {
+       int extraadd=lazy[ind];
+       lazy[ind]=0;
+       extraadd%=3;
+       for(int i=0;i<extraadd;i++)
+       	shift(ind);
+       if(start!=end)
+       {
+       	lazy[ind*2]+=extraadd;
+       	lazy[ind*2+1]+=extraadd;
+      
+       }
+      }
+      if(start>qend||end<qstart)
+      	return;
+      if(qstart<=start && qend>=end)
+      {
+      	shift(ind);
+      	if(start!=end)
+      	{
+      		lazy[ind*2]+=1;
+      		lazy[ind*2+1]+=1;
+      	}
+      	return;
+      }
+      	int mid=start+(end-start)/2;
+      	update(2*ind,start,mid,qstart,qend);
+      	update(2*ind+1,mid+1,end,qstart,qend);
+    
+      st[ind].arr[0]=st[ind*2].arr[0]+st[ind*2+1].arr[0];
+       st[ind].arr[1]=st[ind*2].arr[1]+st[ind*2+1].arr[1];
+        st[ind].arr[2]=st[ind*2].arr[2]+st[ind*2+1].arr[2];
+      
+    }
+    int query(int ind,int start,int end,int qstart,int qend)
+    {
+      if(lazy[ind]!=0)
+      {
+      	int extraadd=lazy[ind];
+      	lazy[ind]=0;
+      	extraadd%=3;
+      	for(int i=0;i<extraadd;i++)
+      	{
+      		shift(ind);
+      	}
+      	if(start!=end)
+      	{
+      		lazy[2*ind]+=extraadd;
+      		lazy[2*ind+1]+=extraadd;
+      	}
+      }
+      if(start>qend or end<qstart)
+      {
+      	return 0;
+      }
+      if(start>=qstart&&end<=qend)
+      {
+      	return st[ind].arr[0];
+      }
+    
+      int mid=start+(end-start)/2;
+      int l=query(ind*2,start,mid,qstart,qend);
+      int r=query(ind*2+1,mid+1,end,qstart,qend);
+     return l+r;
+    
+    }
+    
+    int main()
+    {
+    
+    	ios_base::sync_with_stdio(false);
+    	cin.tie(0);
+    	cout.tie(0);
+      int n,q;
+      cin>>n>>q;
+      build(1,1,n);
+      while(q--)
+      {
+      	int type,l,r;
+      	cin>>type>>l>>r;
+      	if(type==0)
+      	{
+         update(1,1,n,l+1,r+1);
+      	}
+      	else
+      	{
+          cout<<query(1,1,n,l+1,r+1)<<"\n";
+      	}
+      }
+    
+]]></content>
+	segmentreelazy
+</snippet>
